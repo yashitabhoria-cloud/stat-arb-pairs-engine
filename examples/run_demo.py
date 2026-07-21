@@ -19,13 +19,18 @@ def main() -> None:
 
     print(f"Pair: {result.pair[0]} / {result.pair[1]}")
     print(f"Hedge ratio: {result.hedge_ratio:.3f}")
-    print(f"Total return: {pct(result.summary['total_return'])}")
+    print(f"Gross total return: {pct(result.summary['gross_total_return'])}")
+    print(f"Cost-adjusted return: {pct(result.summary['cost_adjusted_total_return'])}")
     print(f"Annualized return: {pct(result.summary['annualized_return'])}")
     print(f"Annualized volatility: {pct(result.summary['annualized_volatility'])}")
     print(f"Sharpe ratio: {result.summary['sharpe_ratio']:.2f}")
+    print(f"Sortino ratio: {result.summary['sortino_ratio']:.2f}")
     print(f"Max drawdown: {pct(result.summary['max_drawdown'])}")
+    print(f"Calmar ratio: {result.summary['calmar_ratio']:.2f}")
+    print(f"Win rate: {pct(result.summary['win_rate'])}")
+    print(f"Annualized turnover: {result.summary['annualized_turnover']:.2f}x")
+    print(f"Transaction-cost drag: {pct(result.summary['total_transaction_cost'])}")
 
 
 if __name__ == "__main__":
     main()
-

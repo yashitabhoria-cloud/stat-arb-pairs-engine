@@ -13,6 +13,9 @@ class BacktestResult:
     pair: tuple[str, str]
     hedge_ratio: float
     signals: pd.DataFrame
+    gross_returns: pd.Series
+    costs: pd.Series
+    turnover: pd.Series
     returns: pd.Series
     equity_curve: pd.Series
     summary: dict[str, float]
@@ -26,6 +29,8 @@ def run_pairs_backtest(
     entry_z: float = 2.0,
     exit_z: float = 0.5,
     transaction_cost_bps: float = 2.0,
+    periods_per_year: int = 252,
+    risk_free_rate: float = 0.0,
 ) -> BacktestResult:
     """Backtest a market-neutral pairs trade on two price columns."""
     x = prices[asset_x].dropna()
@@ -48,13 +53,24 @@ def run_pairs_backtest(
     strategy_returns = gross_returns - costs
     equity_curve = (1.0 + strategy_returns).cumprod()
 
-    summary = performance_summary(strategy_returns)
+    summary = performance_summary(
+        strategy_returns,
+        periods_per_year=periods_per_year,
+        risk_free_rate=risk_free_rate,
+        turnover=turnover,
+        costs=costs,
+    )
+    summary["gross_total_return"] = float((1.0 + gross_returns).prod() - 1.0)
+    summary["cost_adjusted_total_return"] = summary["total_return"]
+
     return BacktestResult(
         pair=(asset_x, asset_y),
         hedge_ratio=hedge_ratio,
         signals=signals,
+        gross_returns=gross_returns,
+        costs=costs,
+        turnover=turnover,
         returns=strategy_returns,
         equity_curve=equity_curve,
         summary=summary,
     )
-
